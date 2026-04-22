@@ -2,6 +2,7 @@
 
 A compact and efficient Todo application built with Next.js 15, Redux Toolkit, and MUI v6.
 
+
 ## Features
 
 - **Task Management**: Create, toggle, and manage tasks with ease.

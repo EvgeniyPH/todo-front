@@ -3,7 +3,7 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 import type { Tag } from '@/types/Todo'
 
 interface TagsState {
-  list: Tag[] // Array of todos
+  list: Tag[] // Array of tags
 }
 
 const initialState: TagsState = {

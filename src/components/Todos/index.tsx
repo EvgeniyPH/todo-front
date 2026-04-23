@@ -9,9 +9,11 @@ import TodosProductivity from './productivity'
 
 import { useAppSelector } from '@/store'
 import { selectFilterTodos } from '@/store/todoSlice'
+import { useFilterTodoContext } from '@/components/common/FilterTodoContext'
 
 export default function Todos() {
-  const todosList = useAppSelector(state => selectFilterTodos(state, ''))
+  const { filterTodo } = useFilterTodoContext()
+  const todosList = useAppSelector(state => selectFilterTodos(state, filterTodo))
 
   const currentDate = format(new Date(), 'dd MMM yyyy')
 

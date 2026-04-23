@@ -5,13 +5,12 @@ import { Box, TextField, InputAdornment } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import HeaderRightPanel from './rightPanel'
 import { textInputStyle } from '@/theme/styles'
+import { useFilterTodoContext } from '@/components/common/FilterTodoContext'
 
 export default function Header() {
+  const { setFilterTodo } = useFilterTodoContext()
   const search = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.value.length > 2) {
-      console.log(event.target.value)
-      // dispatch(findTodo(event.target.value))
-    }
+    setFilterTodo(event.target.value)
   }
   return (
     <Box

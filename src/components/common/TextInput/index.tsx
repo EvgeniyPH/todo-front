@@ -1,6 +1,9 @@
-import { ChangeEventHandler } from 'react'
+import { ChangeEventHandler, useState } from 'react'
 import { Controller, FieldErrors, FieldPathValue, FieldValues, Path, UseControllerProps } from 'react-hook-form'
+import VisibilityIcon from '@mui/icons-material/Visibility'
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff'
 
+import { InputAdornment, SvgIcon, Box } from '@mui/material'
 import TextField, { StandardTextFieldProps } from '@mui/material/TextField'
 
 interface TextInputProps<
@@ -35,8 +38,11 @@ const TextInput = <
   type,
   onChange,
   sx,
+  slotProps,
   ...rest
 }: TextInputProps<TFieldValues, TName>) => {
+  const [isPasswordHidden, setIsPasswordHidden] = useState(true)
+
   return (
     <Controller
       control={control}
@@ -55,9 +61,50 @@ const TextInput = <
           helperText={customErrorMessage !== undefined ? customErrorMessage : (errors?.[name]?.message as string)}
           size={size}
           disabled={disabled}
-          type={type}
+          type={type === 'password' ? (isPasswordHidden ? 'password' : 'text') : type}
           sx={{
             ...sx,
+          }}
+          slotProps={{
+            input: {
+              endAdornment:
+                type === 'password' ? (
+                  <InputAdornment position='end'>
+                    <Box
+                      sx={{
+                        display: 'flex',
+                        pl: '16px',
+                        py: '4px',
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => setIsPasswordHidden(prev => !prev)}
+                    >
+                      {isPasswordHidden ? (
+                        <SvgIcon
+                          component={VisibilityOffIcon}
+                          sx={{
+                            width: '20px',
+                            height: '20px',
+                            color: 'text.secondary',
+                          }}
+                          inheritViewBox
+                        />
+                      ) : (
+                        <SvgIcon
+                          component={VisibilityIcon}
+                          sx={{
+                            width: '20px',
+                            height: '20px',
+                            color: 'text.secondary',
+                          }}
+                          inheritViewBox
+                        />
+                      )}
+                    </Box>
+                  </InputAdornment>
+                ) : undefined,
+            },
+            ...slotProps,
           }}
         />
       )}

@@ -1,6 +1,7 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit'
 import todoSliceReducer from '@/store/todoSlice'
 import tagSliceReducer from '@/store/tagSlice'
+import authSliceReducer from '@/store/authSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
@@ -8,12 +9,13 @@ import storage from 'redux-persist/lib/storage'
 const rootReducers = combineReducers({
   todos: todoSliceReducer,
   tags: tagSliceReducer,
+  auth: authSliceReducer,
 })
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['todos', 'tags'],
+  whitelist: ['todos', 'tags', 'auth'],
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducers)

@@ -150,6 +150,18 @@ const theme = createTheme({
         },
       },
     },
+    MuiTextField: {
+      styleOverrides: {
+        root: {
+          '& .MuiOutlinedInput-root': {
+            '& input': {
+              boxShadow: '0 0 0 100px #18181b inset',
+              borderRadius: 0,
+            },
+          },
+        },
+      },
+    },
     MuiPickersTextField: {
       styleOverrides: {
         root: {

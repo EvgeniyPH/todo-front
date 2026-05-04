@@ -1,0 +1,148 @@
+'use client'
+
+import Link from 'next/link'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { Box, Typography, Button, Divider } from '@mui/material'
+import { textInputStyle, labelInputStyle } from '@/theme/styles'
+import TextInput from '@/components/common/TextInput'
+import { SCHEMA } from './validation'
+
+export const SignUpForm = () => {
+  const {
+    control,
+    formState: { errors, isValid },
+    handleSubmit,
+  } = useForm({
+    mode: 'onSubmit',
+    resolver: yupResolver(SCHEMA),
+    defaultValues: {
+      email: '',
+      username: '',
+      password: '',
+      confirmPassword: '',
+    },
+  })
+
+  const onSubmit = handleSubmit(({ email, username, password }) => {
+    if (isValid) {
+    }
+  })
+
+  return (
+    <Box
+      component='form'
+      noValidate
+      onSubmit={onSubmit}
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1.25rem',
+      }}
+    >
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <Typography variant='body2' component={'label'} sx={labelInputStyle}>
+          Email Address
+        </Typography>
+        <TextInput
+          control={control}
+          errors={errors}
+          name='email'
+          type='email'
+          placeholder='Enter email address'
+          size='small'
+          sx={textInputStyle}
+        />
+      </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <Typography variant='body2' component={'label'} sx={labelInputStyle}>
+          Username
+        </Typography>
+        <TextInput
+          control={control}
+          errors={errors}
+          name='username'
+          placeholder='Enter username'
+          size='small'
+          sx={textInputStyle}
+        />
+      </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <Typography variant='body2' component={'label'} sx={labelInputStyle}>
+          Password
+        </Typography>
+        <TextInput
+          control={control}
+          errors={errors}
+          name='password'
+          placeholder='••••••••'
+          type='password'
+          size='small'
+          sx={textInputStyle}
+        />
+      </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
+        <Typography variant='body2' component={'label'} sx={labelInputStyle}>
+          Confirm Password
+        </Typography>
+        <TextInput
+          control={control}
+          errors={errors}
+          name='confirmPassword'
+          placeholder='••••••••'
+          type='password'
+          size='small'
+          sx={textInputStyle}
+        />
+      </Box>
+      <Box>
+        <Button type='submit' size='small' variant='contained' color='primary' sx={{ fontSize: '1rem' }} fullWidth>
+          Sign Up
+        </Button>
+      </Box>
+      <Divider
+        sx={{
+          marginTop: '0.75rem',
+          backgroundColor: 'rgba(39, 39, 42, 0.65)',
+        }}
+      />
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginBottom: '1.5rem',
+          fontSize: '0.875rem',
+          color: '#a1a1aa',
+        }}
+      >
+        Already have an account?{' '}
+        <Typography variant='body1' sx={{ color: 'primary.main', marginLeft: '0.2rem' }}>
+          <Link href='/login'>Sign In</Link>
+        </Typography>
+      </Box>
+    </Box>
+  )
+}
+
+export default SignUpForm

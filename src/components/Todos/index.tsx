@@ -6,20 +6,19 @@ import { format } from 'date-fns'
 import TodosHeader from './header'
 import TodosList from './list'
 import TodosProductivity from './productivity'
-
-import { useAppSelector } from '@/store'
-import { selectFilterTodos } from '@/store/todoSlice'
+import { useGetTodoListQuery } from '@/services/todo/api'
 import { useFilterTodoContext } from '@/components/common/FilterTodoContext'
 
 export default function Todos() {
-  const { filterTodo } = useFilterTodoContext()
-  const todosList = useAppSelector(state => selectFilterTodos(state, filterTodo))
+  const { filters } = useFilterTodoContext()
+
+  const { data: todosList, isFetching } = useGetTodoListQuery(filters)
 
   const currentDate = format(new Date(), 'dd MMM yyyy')
 
   return (
     <>
-      <TodosHeader todosCount={todosList?.length || 0} />
+      <TodosHeader todosCount={todosList?.todos.count || 0} />
       <Grid container spacing={4}>
         <Grid
           size={{ xs: 12, md: 8 }}
@@ -65,14 +64,14 @@ export default function Todos() {
               {currentDate}
             </Typography>
           </Box>
-          {/* {isLoading ? (
+          {isFetching ? (
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               <Skeleton variant='rounded' animation='wave' width='100%' height={70} />
               <Skeleton variant='rounded' animation='wave' width='100%' height={70} />
             </Box>
-          ) : ( */}
-          <TodosList todosList={todosList} />
-          {/* )} */}
+          ) : (
+            <TodosList todosList={todosList} />
+          )}
         </Grid>
         <Grid size={{ xs: 12, md: 4 }}>
           <TodosProductivity />

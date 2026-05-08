@@ -1,14 +1,21 @@
 'use client'
 
+import { useTransition } from 'react'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
+import { useRouter } from 'next/navigation'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Box, Typography, Button, Divider } from '@mui/material'
 import { textInputStyle, labelInputStyle } from '@/theme/styles'
 import TextInput from '@/components/common/TextInput'
+import { useRegistrationMutation } from '@/services/auth/api'
 import { SCHEMA } from './validation'
 
 export const SignUpForm = () => {
+  const [registration] = useRegistrationMutation()
+  const [isPending, startTransition] = useTransition()
+  const router = useRouter()
+
   const {
     control,
     formState: { errors, isValid },
@@ -24,8 +31,14 @@ export const SignUpForm = () => {
     },
   })
 
-  const onSubmit = handleSubmit(({ email, username, password }) => {
+  const onSubmit = handleSubmit(({ email, password, username }) => {
     if (isValid) {
+      startTransition(async () => {
+        const { data: authResponse } = await registration({ email, password, username })
+        if (authResponse) {
+          router.push('/login') // Redirect to dashboard after successful
+        }
+      })
     }
   })
 
@@ -116,7 +129,16 @@ export const SignUpForm = () => {
         />
       </Box>
       <Box>
-        <Button type='submit' size='small' variant='contained' color='primary' sx={{ fontSize: '1rem' }} fullWidth>
+        <Button
+          loading={isPending}
+          disabled={isPending}
+          type='submit'
+          size='small'
+          variant='contained'
+          color='primary'
+          sx={{ fontSize: '1rem' }}
+          fullWidth
+        >
           Sign Up
         </Button>
       </Box>

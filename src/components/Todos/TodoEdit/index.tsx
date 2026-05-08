@@ -13,18 +13,22 @@ import PriorityElement from './priorityElement'
 import { SelectTags } from './selectTags'
 import { SCHEMA } from './validation'
 import { textInputStyle, labelInputStyle } from '@/theme/styles'
-import { useAppDispatch } from '@/store'
-import { addTodo } from '@/store/todoSlice'
-import { addTags } from '@/store/tagSlice'
-import { Priority, Tag } from '@/types/Todo'
+// import { useAppDispatch } from '@/store'
+// import { addTodo } from '@/store/todoSlice'
+// import { addTags } from '@/store/tagSlice'
+import { showNotification } from '@/utils/showNotification'
+import { AutocompleteOption } from '@/components/common/Autocomplete'
+import { Priority } from '@/services/todo/types'
+import { Tag } from '@/services/tag/types'
+import { useCreateTodoMutation } from '@/services/todo/api'
 
 interface Props {
   toOpen: (open: boolean) => void
 }
 
 export default function TodoEdit({ toOpen }: Props) {
-  const dispatch = useAppDispatch()
   const currentDay = format(new Date(), 'yyyy-MM-dd')
+  const [createTodo, { isLoading: isLoading }] = useCreateTodoMutation()
 
   const {
     control,
@@ -42,7 +46,7 @@ export default function TodoEdit({ toOpen }: Props) {
       description: '',
       dueDate: '',
       priority: '',
-      tags: '',
+      tags: [],
     },
   })
 
@@ -53,7 +57,17 @@ export default function TodoEdit({ toOpen }: Props) {
     trigger('priority')
   }
 
-  const handleSetTags = (tags: string) => {
+  const handleSetTags = (tagsOptions: AutocompleteOption[]) => {
+    const tags: Tag[] = []
+    tagsOptions.forEach(option => {
+      const tag: Tag = {
+        name: option.label,
+      }
+      if (option.value) {
+        tag.id = option.value as number
+      }
+      tags.push(tag)
+    })
     setValue('tags', tags)
     trigger('tags')
   }
@@ -61,22 +75,25 @@ export default function TodoEdit({ toOpen }: Props) {
   const onSubmit = handleSubmit(() => {
     if (isValid) {
       const values = getValues()
-      const tags: Tag[] = values.tags ? values.tags.split(',') : []
+      const tags: Tag[] = values.tags ? values.tags : []
 
-      dispatch(
-        addTodo({
-          id: Date.now(),
-          title: values.title,
-          completed: false,
-          tags: tags,
-          description: values.description,
-          priority: values.priority as Priority,
-          dueDate: values.dueDate ? format(values.dueDate, 'yyyy-MM-dd') : currentDay,
-        }),
-      )
-      dispatch(addTags(tags))
+      const data = {
+        title: values.title,
+        completed: false,
+        tags: tags,
+        description: values.description,
+        priority: values.priority as Priority,
+        dueDate: values.dueDate ? format(values.dueDate, 'yyyy-MM-dd') : currentDay,
+      }
 
-      toOpen(false)
+      createTodo(data)
+        .unwrap()
+        .then(() => {
+          toOpen(false)
+        })
+        .catch(() => {
+          showNotification('Failed to create todo', 'error')
+        })
     }
   })
 
@@ -112,7 +129,12 @@ export default function TodoEdit({ toOpen }: Props) {
         >
           Create New Todo
         </Typography>
-        <IconButton sx={{ color: 'primary.text' }} aria-label='delete' size='small' onClick={() => toOpen(false)}>
+        <IconButton
+          sx={{ color: 'primary.text' }}
+          aria-label='delete'
+          size='small'
+          onClick={() => toOpen(false)}
+        >
           <CloseIcon sx={{ fontSize: '1.25rem' }} />
         </IconButton>
       </Box>
@@ -145,13 +167,23 @@ export default function TodoEdit({ toOpen }: Props) {
             }}
           />
         </Box>
-        <PriorityElement formPriority={formPriority} setPriority={handleSetPriority} errors={errors} />
+        <PriorityElement
+          formPriority={formPriority}
+          setPriority={handleSetPriority}
+          errors={errors}
+        />
         <Grid container spacing={3} sx={{ paddingTop: '40px' }}>
           <Grid size={{ xs: 12 }}>
             <Typography variant='body2' component={'label'} sx={labelInputStyle}>
               Due Date
             </Typography>
-            <DatePicker control={control} name='dueDate' size='small' minDate={new Date()} sx={{ width: '100%' }} />
+            <DatePicker
+              control={control}
+              name='dueDate'
+              size='small'
+              minDate={new Date()}
+              sx={{ width: '100%' }}
+            />
           </Grid>
           <Grid size={{ xs: 12 }}>
             <Typography variant='body2' component={'label'} sx={labelInputStyle}>
@@ -188,10 +220,24 @@ export default function TodoEdit({ toOpen }: Props) {
           alignItems: 'center',
         }}
       >
-        <Button size='small' variant='text' color='primary' sx={{ fontSize: '1rem' }} onClick={() => toOpen(false)}>
+        <Button
+          size='small'
+          variant='text'
+          color='primary'
+          sx={{ fontSize: '1rem' }}
+          onClick={() => toOpen(false)}
+        >
           Cancel
         </Button>
-        <Button type='submit' size='small' variant='contained' color='primary' sx={{ fontSize: '1rem' }}>
+        <Button
+          loading={isLoading}
+          disabled={isLoading}
+          type='submit'
+          size='small'
+          variant='contained'
+          color='primary'
+          sx={{ fontSize: '1rem' }}
+        >
           Save Todo
         </Button>
       </Box>

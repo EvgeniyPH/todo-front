@@ -2,10 +2,10 @@
 
 import { Box, Typography } from '@mui/material'
 import TodosItem from './item'
-import { Todo } from '@/types/Todo'
+import { todoListResponse } from '@/services/todo/types'
 
 interface Props {
-  todosList: Todo[]
+  todosList: todoListResponse | undefined
 }
 
 export default function TodosList({ todosList }: Props) {
@@ -17,8 +17,8 @@ export default function TodosList({ todosList }: Props) {
         gap: '0.75rem',
       }}
     >
-      {!!todosList?.length ? (
-        todosList.map(todo => <TodosItem key={todo.id} todo={todo} />)
+      {!!todosList && todosList?.todos.count ? (
+        todosList?.todos.rows.map(todo => <TodosItem key={todo.id} todo={todo} />)
       ) : (
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
           <Typography variant='body1' color='text.secondary' sx={{ color: 'text.secondary' }}>

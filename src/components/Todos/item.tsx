@@ -4,9 +4,10 @@ import { useState, ChangeEvent } from 'react'
 
 import { Box, Typography, Card, CardContent, Checkbox, Chip } from '@mui/material'
 
-import { Todo, PriorityColorsEnum } from '@/types/Todo'
-import { useDispatch } from 'react-redux'
-import { toggleTodoComplete } from '@/store/todoSlice'
+import { PriorityColorsEnum } from '@/types/Todo'
+import { Todo } from '@/services/todo/types'
+// import { useDispatch } from 'react-redux'
+// import { toggleTodoComplete } from '@/store/todoSlice'
 
 interface Props {
   todo: Todo
@@ -15,11 +16,11 @@ interface Props {
 const Item = ({ todo }: Props) => {
   const label = { slotProps: { input: { 'aria-label': 'Checkbox todo' } } }
   const [completed, setCompleted] = useState(todo.completed)
-  const dispatch = useDispatch()
+  // const dispatch = useDispatch()
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setCompleted(event.target.checked)
-    dispatch(toggleTodoComplete(todo.id))
+    // dispatch(toggleTodoComplete(todo.id))
   }
 
   return (
@@ -101,8 +102,8 @@ const Item = ({ todo }: Props) => {
             {!!todo.tags.length &&
               todo.tags.map(tag => (
                 <Chip
-                  key={tag}
-                  label={`#${tag}`}
+                  key={tag.id}
+                  label={`#${tag.name}`}
                   variant='outlined'
                   size='small'
                   sx={{

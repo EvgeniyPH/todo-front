@@ -2,16 +2,29 @@
 
 import { FC } from 'react'
 
-import { Autocomplete, AutocompleteProps, TextField, Chip } from '@mui/material'
+import {
+  Autocomplete,
+  AutocompleteProps,
+  TextField,
+  Chip,
+  createFilterOptions,
+} from '@mui/material'
 
+export interface AutocompleteOption {
+  label: string
+  value?: string | number
+  disabled?: boolean
+  inputValue?: string
+}
+const filter = createFilterOptions<AutocompleteOption>()
 interface Props
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   extends Omit<AutocompleteProps<any, any, any, any>, 'options' | 'renderInput' | 'onChange'> {
   borderRadius?: number
   width?: string
   label?: string
-  options: string[]
-  onChange: (value: string[]) => void
+  options: AutocompleteOption[]
+  onChange: (value: AutocompleteOption[]) => void
   error?: boolean
 }
 
@@ -29,18 +42,46 @@ export const CustomAutocomplete: FC<Props> = ({
     <Autocomplete
       fullWidth
       options={options}
-      onChange={(event, newValue) => onChange(newValue)}
-      getOptionLabel={option => option || ''}
+      onChange={(event, newValue: AutocompleteOption[] | string[]) => {
+        newValue = newValue.map(value => {
+          if (typeof value === 'string') {
+            return { label: value }
+          }
+          return value
+        })
+        onChange(newValue)
+      }}
+      getOptionLabel={option => {
+        if (typeof option === 'string') {
+          return option
+        }
+        if (option.inputValue) {
+          return option.inputValue
+        }
+        return option.label
+      }}
+      filterOptions={(options, params) => {
+        const filtered = filter(options, params)
+
+        if (params.inputValue !== '') {
+          filtered.push({
+            inputValue: params.inputValue ? `Add new tag "${params.inputValue}"` : '',
+            label: params.inputValue,
+          })
+        }
+
+        return filtered
+      }}
       loading={loading}
       {...rest}
-      renderValue={(value: readonly string[], getItemProps) =>
-        value.map((option: string, index: number) => {
+      renderValue={(value: readonly AutocompleteOption[] | string[], getItemProps) =>
+        value.map((option: AutocompleteOption | string, index: number) => {
           const { ...itemProps } = getItemProps({ index })
           return (
             <Chip
               {...itemProps}
               variant='outlined'
-              label={option}
+              label={typeof option === 'string' ? option : option.label}
               key={index}
               sx={{
                 border: '1px solid #27272a',

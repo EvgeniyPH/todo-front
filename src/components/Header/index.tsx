@@ -1,17 +1,31 @@
 'use client'
 
-import { ChangeEvent } from 'react'
-import { Box, TextField, InputAdornment } from '@mui/material'
+// import { ChangeEvent } from 'react'
+import { Box, InputAdornment } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import HeaderRightPanel from './rightPanel'
 import { textInputStyle } from '@/theme/styles'
 import { useFilterTodoContext } from '@/components/common/FilterTodoContext'
+import TextInput from '@/components/common/TextInput'
+import { useForm } from 'react-hook-form'
 
 export default function Header() {
-  const { setFilterTodo } = useFilterTodoContext()
-  const search = (event: ChangeEvent<HTMLInputElement>) => {
-    setFilterTodo(event.target.value)
-  }
+  const { filters, setFilters } = useFilterTodoContext()
+
+  const { control, handleSubmit } = useForm({
+    mode: 'onSubmit',
+    defaultValues: {
+      title: filters.title || '',
+    },
+  })
+
+  const onSubmit = handleSubmit(({ title }) => {
+    setFilters({
+      ...filters,
+      title: title,
+    })
+  })
+
   return (
     <Box
       component={'header'}
@@ -32,19 +46,21 @@ export default function Header() {
         }}
       >
         <Box
+          component='form'
+          noValidate
+          onSubmit={onSubmit}
           sx={{
             position: 'relative',
             width: '100%',
             maxWidth: '420px',
           }}
         >
-          <TextField
+          <TextInput
+            control={control}
             fullWidth
             size='small'
             placeholder='Search todo...'
-            variant='outlined'
-            rows={10}
-            onChange={search}
+            // type='search'
             slotProps={{
               input: {
                 startAdornment: (
@@ -59,7 +75,9 @@ export default function Header() {
                 ),
               },
             }}
-            sx={textInputStyle}
+            rows={10}
+            name='title'
+            sx={{ ...textInputStyle, '& .MuiOutlinedInput-root': { paddingRight: '3px' } }}
           />
         </Box>
       </Box>

@@ -1,18 +1,24 @@
 'use client'
 
-import React, { createContext, useContext, useState, ReactNode } from 'react'
+import React, { createContext, useContext, ReactNode, Dispatch, SetStateAction } from 'react'
+import { useParamsFilter } from '@/hooks/useParamsFilter'
 
 interface FilterContextType {
-  filterTodo: string
-  setFilterTodo: (id: string) => void
+  filters: Record<'title' | 'status', string | string[]>
+  setFilters: Dispatch<SetStateAction<Record<'title' | 'status', string | string[]>>>
 }
 
 const FilterContext = createContext<FilterContextType | undefined>(undefined)
 
 export const FilterTodoContext = ({ children }: { children: ReactNode }) => {
-  const [filterTodo, setFilterTodo] = useState<string>('')
+  const { filters, setFilters } = useParamsFilter({
+    filterFields: [
+      { field: 'title', type: 'string' },
+      { field: 'status', type: 'string' },
+    ],
+  })
 
-  return <FilterContext.Provider value={{ filterTodo, setFilterTodo }}>{children}</FilterContext.Provider>
+  return <FilterContext.Provider value={{ filters, setFilters }}>{children}</FilterContext.Provider>
 }
 
 export const useFilterTodoContext = () => {

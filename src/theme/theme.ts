@@ -29,6 +29,12 @@ const theme = createTheme({
         root: {
           textTransform: 'none',
           lineHeight: 1.6,
+          '&.Mui-disabled': {
+            backgroundColor: '#5d4e8d',
+            '& .MuiButton-loadingIndicator': {
+              color: palette.text.primary,
+            },
+          },
           variants: [
             {
               props: { variant: 'contained' },

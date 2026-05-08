@@ -2,11 +2,10 @@
 
 import { Box, Card, CardContent, Typography, Grid } from '@mui/material'
 import ProgressBar from '@/components/common/Progressbar'
-
-import { useAppSelector } from '@/store'
+import { Todo } from '@/types/Todo'
 
 export default function TodosProductivity() {
-  const { list: todosList } = useAppSelector(store => store.todos)
+  const todosList: Todo[] = []
 
   const completedTodos = todosList?.filter(todo => todo.completed === true).length || 0
   const totalTodos = todosList?.length || 0

@@ -1,14 +1,24 @@
 'use client'
 
+import { useTransition } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Box, Typography, Button, Divider } from '@mui/material'
 import { textInputStyle, labelInputStyle } from '@/theme/styles'
 import TextInput from '@/components/common/TextInput'
+import { useLoginMutation } from '@/services/auth/api'
+import { setCredentials } from '@/store/authSlice'
+import { useAppDispatch } from '@/store'
 import { SCHEMA } from './validation'
 
 export const LoginForm = () => {
+  const dispatch = useAppDispatch()
+  const [login] = useLoginMutation()
+  const [isPending, startTransition] = useTransition()
+  const router = useRouter()
+
   const {
     control,
     formState: { errors, isValid },
@@ -24,6 +34,13 @@ export const LoginForm = () => {
 
   const onSubmit = handleSubmit(({ email, password }) => {
     if (isValid) {
+      startTransition(async () => {
+        const { data: authResponse } = await login({ email, password })
+        if (authResponse) {
+          dispatch(setCredentials(authResponse))
+          router.push('/todo') // Redirect to dashboard after successful
+        }
+      })
     }
   })
 
@@ -89,7 +106,17 @@ export const LoginForm = () => {
             <Link href='/reset-password'>Forgot password?</Link>
           </Typography>
         </Box>
-        <Button type='submit' size='small' variant='contained' color='primary' sx={{ fontSize: '1rem' }} fullWidth>
+        <Button
+          loading={isPending}
+          disabled={isPending}
+          type='submit'
+          size='small'
+          variant='contained'
+          color='primary'
+          sx={{ fontSize: '1rem' }}
+          fullWidth
+          disableRipple
+        >
           Sign In
         </Button>
       </Box>

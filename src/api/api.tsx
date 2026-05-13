@@ -34,5 +34,5 @@ export const baseApi = createApi({
   reducerPath: 'api',
   baseQuery: axiosBaseQuery(),
   endpoints: () => ({}),
-  tagTypes: [],
+  tagTypes: ['Todo', 'TodoTotals'],
 })

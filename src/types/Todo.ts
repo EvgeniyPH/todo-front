@@ -14,6 +14,6 @@ export interface Todo {
 
 export enum PriorityColorsEnum {
   High = 'error',
-  Medium = 'primary',
+  Medium = 'warning',
   Low = 'success',
 }

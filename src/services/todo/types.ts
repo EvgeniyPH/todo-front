@@ -19,6 +19,11 @@ export interface todoListResponse {
   }
 }
 
+export interface todoTotalsResponse {
+  totalTodo: number
+  totalCompleted: number | null
+}
+
 export type paramsFilter = Record<'title' | 'status', string | string[]>
 
 export interface createTodoResponse {
@@ -26,4 +31,4 @@ export interface createTodoResponse {
 }
 export interface createTodoPayload extends Omit<Todo, 'id'> {}
 
-export interface updateTodoPayload extends Partial<Omit<Todo, 'id'>> {}
+export interface updateTodoPayload extends Partial<createTodoPayload> {}

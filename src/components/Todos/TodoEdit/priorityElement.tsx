@@ -60,7 +60,7 @@ export default function PriorityElement({ formPriority, setPriority, errors }: P
         <Button
           size='medium'
           variant={'outlined'}
-          color='primary'
+          color='warning'
           startIcon={<BoltIcon />}
           sx={[
             {
@@ -73,7 +73,7 @@ export default function PriorityElement({ formPriority, setPriority, errors }: P
               },
             },
             formPriority === 'Medium' && {
-              backgroundColor: '#a78bfa55',
+              backgroundColor: '#f59f0b50',
             },
           ]}
           onClick={() => {

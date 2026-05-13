@@ -35,7 +35,11 @@ export default function TodosHeader({ todosCount }: Props) {
           >
             Todo Overview
           </Typography>
-          <Typography variant='body1' component={'p'} sx={{ marginTop: '0.25rem', color: 'text.secondary' }}>
+          <Typography
+            variant='body1'
+            component={'p'}
+            sx={{ marginTop: '0.25rem', color: 'text.secondary' }}
+          >
             You have {todosCount} tasks remaining for today.
           </Typography>
         </Box>

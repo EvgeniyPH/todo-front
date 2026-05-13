@@ -5,7 +5,7 @@ import TodosItem from './item'
 import { todoListResponse } from '@/services/todo/types'
 
 interface Props {
-  todosList: todoListResponse | undefined
+  todosList?: todoListResponse
 }
 
 export default function TodosList({ todosList }: Props) {
@@ -17,8 +17,8 @@ export default function TodosList({ todosList }: Props) {
         gap: '0.75rem',
       }}
     >
-      {!!todosList && todosList?.todos.count ? (
-        todosList?.todos.rows.map(todo => <TodosItem key={todo.id} todo={todo} />)
+      {!!todosList && todosList.todos.count ? (
+        todosList.todos.rows.map(todo => <TodosItem key={todo.id} todo={todo} />)
       ) : (
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
           <Typography variant='body1' color='text.secondary' sx={{ color: 'text.secondary' }}>

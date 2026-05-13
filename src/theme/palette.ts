@@ -8,6 +8,10 @@ export const palette = {
     text: '#fafafa',
     // contrastText: '#ffffff',
   },
+  warning: {
+    main: '#f59e0b',
+    text: '#fafafa',
+  },
   text: {
     primary: '#fafafa',
     secondary: '#71717a',

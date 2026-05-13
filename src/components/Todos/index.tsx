@@ -64,10 +64,10 @@ export default function Todos() {
               {currentDate}
             </Typography>
           </Box>
-          {isFetching ? (
+          {isFetching && !todosList ? (
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <Skeleton variant='rounded' animation='wave' width='100%' height={70} />
-              <Skeleton variant='rounded' animation='wave' width='100%' height={70} />
+              <Skeleton variant='rounded' animation='wave' width='100%' height={120} />
+              <Skeleton variant='rounded' animation='wave' width='100%' height={120} />
             </Box>
           ) : (
             <TodosList todosList={todosList} />

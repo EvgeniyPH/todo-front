@@ -2,13 +2,13 @@
 
 import { Box, Card, CardContent, Typography, Grid } from '@mui/material'
 import ProgressBar from '@/components/common/Progressbar'
-import { Todo } from '@/types/Todo'
+import { useCountTotalsQuery } from '@/services/todo/api'
 
 export default function TodosProductivity() {
-  const todosList: Todo[] = []
+  const { data } = useCountTotalsQuery()
 
-  const completedTodos = todosList?.filter(todo => todo.completed === true).length || 0
-  const totalTodos = todosList?.length || 0
+  const completedTodos = data?.totalCompleted || 0
+  const totalTodos = data?.totalTodo || 0
   const completedTodosPercentage = completedTodos ? (completedTodos / totalTodos) * 100 : 0
 
   return (
